@@ -1,17 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth"); // Make sure this file exists
+const { testAPI, getLogs, getGraphData, getFailurePattern } = require("../controllers/logController");
+const { register, login } = require("../controllers/userController");
 
-const {
-  testAPI,
-  getLogs,
-  getGraphData,
-  getFailurePattern
-} = require("../controllers/logController");
+// Public
+router.post("/register", register);
+router.post("/login", login);
 
-// Routes
-router.post("/test", testAPI);
-router.get("/logs", getLogs);
-router.get("/graphs", getGraphData);
-router.get("/pattern", getFailurePattern);
+// Protected (Only logged in users can access these)
+router.post("/test", auth, testAPI);
+router.get("/logs", auth, getLogs);
+router.get("/graphs", auth, getGraphData);
+router.get("/pattern", auth, getFailurePattern);
 
 module.exports = router;
